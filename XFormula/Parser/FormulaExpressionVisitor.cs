@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FastExpressionCompiler.LightExpression;
+﻿using FastExpressionCompiler.LightExpression;
 using XFormula.Antlr4Gen;
 using static FastExpressionCompiler.LightExpression.Expression;
 
@@ -7,26 +6,19 @@ namespace XFormula.Parser
 {
     public class FormulaExpressionVisitor : FormulaBaseVisitor<Expression>
     {
-        public List<string> Variables { get; } = new();
-        private static readonly Expression DefaultValue = Constant(0M);
+        protected static readonly Expression DefaultValue = Constant(0M);
 
         public override Expression VisitAtom(FormulaParser.AtomContext context)
         {
-            switch (context.Start.Type)
+            return context.Start.Type switch
             {
-                case FormulaParser.NUMBER:
-                    return Constant(context.NUMBER().GetText().AsDecimal());
-                case FormulaParser.VARIABLE:
-                    var variable = context.VARIABLE().GetText();
-                    Variables.Add(variable);
-                    return Call(FormulaFunction.ValueMethodInfo, Constant(variable), FormulaFunction.ValuesExpr);
-                case FormulaParser.MINUS:
-                    return Substract(DefaultValue, Visit(context.atom()));
-                case FormulaParser.LPAREN:
-                    return Visit(context.atom());
-                default:
-                    return DefaultValue;
-            }
+                FormulaParser.NUMBER => Constant(context.NUMBER().GetText().AsDecimal()),
+                FormulaParser.VARIABLE => Call(FormulaFunction.ValueMethodInfo, Constant(context.VARIABLE().GetText()),
+                    FormulaFunction.ValuesExpr),
+                FormulaParser.MINUS => Substract(DefaultValue, Visit(context.atom())),
+                FormulaParser.LPAREN => Visit(context.atom()),
+                _ => DefaultValue
+            };
         }
 
         public override Expression VisitParens(FormulaParser.ParensContext context)
