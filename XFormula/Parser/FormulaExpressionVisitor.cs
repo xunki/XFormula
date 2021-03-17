@@ -13,12 +13,16 @@ namespace XFormula.Parser
             return context.Start.Type switch
             {
                 FormulaParser.NUMBER => Constant(context.NUMBER().GetText().AsDecimal()),
-                FormulaParser.VARIABLE => Call(FormulaFunction.ValueMethodInfo, Constant(context.VARIABLE().GetText()),
-                    FormulaFunction.ValuesExpr),
+                FormulaParser.VARIABLE => VisitVariable(context.VARIABLE().GetText()),
                 FormulaParser.MINUS => Substract(DefaultValue, Visit(context.atom())),
                 FormulaParser.LPAREN => Visit(context.atom()),
                 _ => DefaultValue
             };
+        }
+
+        protected virtual Expression VisitVariable(string code)
+        {
+            return Call(FormulaFunction.ValueMethodInfo, Constant(code), FormulaFunction.ValuesExpr);
         }
 
         public override Expression VisitParens(FormulaParser.ParensContext context)

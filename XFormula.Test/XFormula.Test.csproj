@@ -42,6 +42,15 @@
           <HintPath>..\packages\FastExpressionCompiler.LightExpression.2.0.0\lib\net45\FastExpressionCompiler.LightExpression.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="Mapster, Version=7.1.5.0, Culture=neutral, PublicKeyToken=2f39883af23c29a8">
+          <HintPath>..\packages\Mapster.7.1.5\lib\net45\Mapster.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Mapster.Core, Version=1.1.5.0, Culture=neutral, PublicKeyToken=e64997d676a9c1d3">
+          <HintPath>..\packages\Mapster.Core.1.1.5\lib\net45\Mapster.Core.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />

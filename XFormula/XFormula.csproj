@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>default</LangVersion>
+        <PackageVersion>0.0.3</PackageVersion>
+        <Authors>西奥笑</Authors>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -20,6 +22,7 @@
     <ItemGroup>
       <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
       <PackageReference Include="FastExpressionCompiler.LightExpression" Version="2.0.0" />
+      <PackageReference Include="Mapster" Version="7.1.5" />
     </ItemGroup>
 
 </Project>

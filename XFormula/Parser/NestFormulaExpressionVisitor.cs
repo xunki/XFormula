@@ -23,30 +23,29 @@ namespace XFormula.Parser
         /// </summary>
         private readonly bool _notAllowAbsentFormula = true;
 
-        public override Expression VisitAtom(FormulaParser.AtomContext context)
+        protected override Expression VisitVariable(string code)
         {
-            if (context.Start.Type != FormulaParser.VARIABLE)
-                return base.VisitAtom(context);
-
-            var code = context.VARIABLE().GetText();
             if (!_formulas.TryGetValue(code, out var formula) && _notAllowAbsentFormula)
                 throw new ArgumentException($"无法找到编码 {code} 对应的依赖关系");
+
+            // 最底层指标，使用字典中的数据
+            if (formula.IsLowest)
+                return base.VisitVariable(code);
 
             // 如果计算函数未生成，则进行解析
             if (formula.CalcFunc == null)
                 Parse(formula, _formulas);
 
-            return Call(FormulaFunction.ValueByFuncMethodInfo, Constant(context.VARIABLE().GetText()),
+            return Call(FormulaFunction.ValueByFuncMethodInfo, Constant(code),
                 FormulaFunction.FormulasExpr, FormulaFunction.ValuesExpr);
         }
 
         public static void Parse(Formula formula, Dictionary<string, Formula> formulas)
         {
-            if (formula.IsLowest)
-                return;
-
+            var input = formula.IsLowest ? formula.Code : formula.FormulaText;
             var errorOutput = new StringWriter();
-            var lexer = new FormulaLexer(CharStreams.fromString(formula.FormulaText), new StringWriter(), errorOutput);
+            var lexer = new FormulaLexer(CharStreams.fromString(input),
+                new StringWriter(), errorOutput);
             var tokens = new CommonTokenStream(lexer);
             var parser = new FormulaParser(tokens, new StringWriter(), errorOutput);
             var tree = parser.prog();

@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using FastExpressionCompiler.LightExpression;
+using Mapster;
 using XFormula.Antlr4Gen;
 using XFormula.Parser;
 
@@ -81,7 +83,7 @@ namespace XFormula
         /// <summary>
         /// 已解析公式缓存 (暂不自动清理)
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Formula> NestFormulaCache = new();
+        private static Dictionary<string, Formula> _nestFormulaCache = new();
 
         /// <summary>
         /// 计算公式值 (支持嵌套)
@@ -99,10 +101,38 @@ namespace XFormula
         /// </summary>
         public static void ParseNestFormula(Dictionary<string, Formula> formulas)
         {
-            foreach (var formula in formulas.Values)
+            var newCaches = new List<Formula>();
+            foreach (var formula in formulas.Values.Where(formula => formula.CalcFunc == null))
             {
-                // TODO 使用缓存
+                // 检查并使用缓存
+                if (_nestFormulaCache.TryGetValue(formula.Code, out var cachedFormula) &&
+                    cachedFormula.FormulaText == formula.FormulaText)
+                {
+                    formula.CalcFunc = cachedFormula.CalcFunc;
+                    continue;
+                }
+                // 重新解析
                 NestFormulaExpressionVisitor.Parse(formula, formulas);
+                newCaches.Add(formula);
+            }
+
+            // 异步更新缓存
+            if (newCaches.Count > 0)
+                Task.Run(() => UpdateNestFormulaCache(newCaches));
+        }
+
+        /// <summary>
+        /// 更新嵌套公式缓存 (线程安全)
+        /// </summary>
+        /// <param name="newCaches"></param>
+        private static void UpdateNestFormulaCache(List<Formula> newCaches)
+        {
+            var lockKey = nameof(FormulaHelper) + nameof(_nestFormulaCache);
+            lock (lockKey)
+            {
+                var newDict = _nestFormulaCache.Adapt<Dictionary<string, Formula>>();
+                newCaches.ForEach(formula => newDict[formula.Code] = formula);
+                _nestFormulaCache = newDict;
             }
         }
         #endregion
