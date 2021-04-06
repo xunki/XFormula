@@ -1,0 +1,1 @@
+dotnet pack XFormula -c Release -o packages

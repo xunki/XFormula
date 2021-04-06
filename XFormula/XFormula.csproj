@@ -20,19 +20,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Antlr4Gen" />
+        <Folder Include="Antlr4Gen"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
-        <PackageReference Include="FastExpressionCompiler.LightExpression" Version="2.0.0" />
-        <PackageReference Include="Mapster" Version="7.1.5" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2"/>
+        <PackageReference Include="FastExpressionCompiler.LightExpression" Version="2.0.0"/>
+        <PackageReference Include="Mapster" Version="7.1.5"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="License\LICENSE.txt">
-        <Pack>true</Pack>
-      </None>
+        <None Include="License\LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
     </ItemGroup>
 
 </Project>
