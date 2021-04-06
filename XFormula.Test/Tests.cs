@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Mapster;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using XFormula.Parser;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -28,13 +29,13 @@ namespace XFormula.Test
 
         private readonly Dictionary<string, Formula> _formulas = new List<Formula>
         {
-            new() {Code = "AA102", FormulaText = "AA101+1"},
-            new() {Code = "AA101", IsLowest = true},
-            new() {Code = "CF711", IsLowest = true},
-            new() {Code = "DD365", IsLowest = true},
-            new() {Code = "AA105", FormulaText = "(DD365+AA101*2+CF711)/12-AA104"},
-            new() {Code = "AA103", FormulaText = "AA102*2"},
-            new() {Code = "AA104", FormulaText = "AA101*2+CF711-5"},
+            new() {Code = "AA102", FormulaText = "AA101+1", Name = "测试102"},
+            new() {Code = "AA101", IsLowest = true, Name = "测试101"},
+            new() {Code = "CF711", IsLowest = true, Name = "测试711"},
+            new() {Code = "DD365", IsLowest = true, Name = "测试365"},
+            new() {Code = "AA105", FormulaText = "(DD365+AA101*2+CF711)/12-AA104", Name = "测试105"},
+            new() {Code = "AA103", FormulaText = "AA102*2", Name = "测试103"},
+            new() {Code = "AA104", FormulaText = "AA101*2+CF711-5", Name = "测试104"},
         }.ToDictionary(f => f.Code, f => f);
 
         [Fact]
@@ -135,6 +136,41 @@ namespace XFormula.Test
             Assert.True(values["AA105"] == (values["DD365"] + values["AA101"] * 2 + values["CF711"]) / 12 -
                 (values["AA101"] * 2 + values["CF711"] - 5 + 20));
             _console.WriteLine(values["AA105"].ToString("F4"));
+        }
+
+        [Fact]
+        private void ParseNestFormula()
+        {
+            var formulas = _formulas.Adapt<Dictionary<string, Formula>>();
+            var node = NestFormulaParsingVisitor.Parse(new Formula
+                {
+                    FormulaText = "AA103+AA101",
+                    Name = "测试",
+                    Code = "TEST001"
+                },
+                formulas, _values);
+            var data = ConvertToEChartsData(node);
+            _console.WriteLine(JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
+        private EChartsTreeData ConvertToEChartsData(NestFormulaParsedNode node)
+        {
+            var data = new EChartsTreeData
+            {
+                Name = $"{node.Name}: {node.Value}", Children = node.Children?.Select(ConvertToEChartsData).ToList()
+            };
+            return data;
+        }
+
+        public class EChartsTreeData
+        {
+            public string Name { get; set; }
+
+            public List<EChartsTreeData> Children { get; set; }
         }
     }
 }

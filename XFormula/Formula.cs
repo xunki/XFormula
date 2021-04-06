@@ -5,11 +5,17 @@ namespace XFormula
 {
     public class Formula
     {
+        #region 相关属性
         /// <summary>
         /// 编码
         /// </summary>
         public string Code { get; set; }
 
+        /// <summary>
+        /// 指标名称
+        /// </summary>
+        public string Name { get; set; }
+        
         /// <summary>
         /// 公式
         /// </summary>
@@ -19,6 +25,7 @@ namespace XFormula
         /// 是否为最底级
         /// </summary>
         public bool IsLowest { get; set; }
+        #endregion
 
         /// <summary>
         /// 计算值的方法

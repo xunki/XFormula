@@ -3,26 +3,36 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>default</LangVersion>
-        <PackageVersion>0.0.3</PackageVersion>
+        <PackageVersion>1.0.0</PackageVersion>
         <Authors>西奥笑</Authors>
+        <Description>使用 Antlr4 实现的简单公式计算库，目前用于指标数据计算</Description>
+        <PackageProjectUrl>https://github.com/xunki/XFormula</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageLicenseFile>License\LICENSE.txt</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <NoWarn>1701;1702;3021</NoWarn>
+        <NoWarn>1701;1702;3021</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <NoWarn>1701;1702;3021</NoWarn>
+        <NoWarn>1701;1702;3021</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Antlr4Gen" />
+        <Folder Include="Antlr4Gen" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
-      <PackageReference Include="FastExpressionCompiler.LightExpression" Version="2.0.0" />
-      <PackageReference Include="Mapster" Version="7.1.5" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
+        <PackageReference Include="FastExpressionCompiler.LightExpression" Version="2.0.0" />
+        <PackageReference Include="Mapster" Version="7.1.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="License\LICENSE.txt">
+        <Pack>true</Pack>
+      </None>
     </ItemGroup>
 
 </Project>

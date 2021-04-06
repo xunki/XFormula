@@ -150,6 +150,12 @@ namespace XFormula
 
             return dict.TryGetValue(key, out var value) ? value : defaultValue;
         }
+
+        public static decimal Round(this decimal value, int decimals = 4,
+            MidpointRounding midpointRounding = MidpointRounding.AwayFromZero)
+        {
+            return Math.Round(value, decimals, midpointRounding);
+        }
         #endregion
     }
 }
