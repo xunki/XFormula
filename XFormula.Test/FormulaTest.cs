@@ -11,11 +11,11 @@ using Xunit.Abstractions;
 
 namespace XFormula.Test
 {
-    public class Tests
+    public class FormulaTest
     {
         private readonly ITestOutputHelper _console;
 
-        public Tests(ITestOutputHelper testOutputHelper)
+        public FormulaTest(ITestOutputHelper testOutputHelper)
         {
             _console = testOutputHelper;
         }
