@@ -97,6 +97,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="ExcelFormulaTest.cs" />
+        <Compile Include="FormulaJavaScriptTest.cs" />
         <Compile Include="FormulaTest.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
